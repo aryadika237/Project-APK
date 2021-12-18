@@ -25,7 +25,25 @@ export default class Home extends Component {
       .catch(error => {
         console.log("Error ya", error);
       })
+    this.getListKeranjang();
+  }
 
+
+  // componentDidUpdate(prevState) {
+  //   if (this.state.keranjangs !== prevState.keranjangs) {
+  //     axios
+  //       .get(API_URL + "keranjangs")
+  //       .then((res) => {
+  //         const keranjangs = res.data;
+  //         this.setState({ keranjangs });
+  //       })
+  //       .catch(error => {
+  //         console.log("Error ya", error);
+  //       })
+  //   }
+  // }
+
+  getListKeranjang = () => {
     axios
       .get(API_URL + "keranjangs")
       .then((res) => {
@@ -35,20 +53,6 @@ export default class Home extends Component {
       .catch(error => {
         console.log("Error ya", error);
       })
-  }
-
-  componentDidUpdate(prevState) {
-    if (this.state.keranjangs !== prevState.keranjangs) {
-      axios
-        .get(API_URL + "keranjangs")
-        .then((res) => {
-          const keranjangs = res.data;
-          this.setState({ keranjangs });
-        })
-        .catch(error => {
-          console.log("Error ya", error);
-        })
-    }
   }
 
   changeCategory = (value) => {
@@ -81,6 +85,7 @@ export default class Home extends Component {
           axios
             .post(API_URL + "keranjangs", keranjang)
             .then(res => {
+              this.getListKeranjang();
               swal({
                 title: "Sukses Masuk Keranjang",
                 text: "Sukses Masuk Keranjang" + keranjang.product.nama,
@@ -127,10 +132,10 @@ export default class Home extends Component {
         <Container fluid>
           <Row>
             <ListCategories changeCategory={this.changeCategory} categoriYangDipilih={categoriYangDipilih} />
-            <Col>
+            <Col className="mt-3">
               <h4><strong>Daftar Produk</strong></h4>
               <hr />
-              <Row>
+              <Row className="overflow-auto menu">
                 {menus && menus.map((menu) => (
                   <Menus
                     key={menu.id}
@@ -139,7 +144,8 @@ export default class Home extends Component {
                 ))}
               </Row>
             </Col>
-            <Hasil keranjangs={keranjangs} {...this.props} />
+            <Hasil keranjangs={keranjangs} {...this.props} getListKeranjang={this.getListKeranjang
+            } />
           </Row>
         </Container>
       </div>
